@@ -2,7 +2,8 @@
 api:
   id: "12983275"
   base: "${project.artifactId}"
-  port: "9185"
+  version: "v1"
+  port: "9186"
 
 my:
   client-id: "xx"

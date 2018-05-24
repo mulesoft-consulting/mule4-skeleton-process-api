@@ -19,7 +19,7 @@
 		outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
 
 	<flow name="api-main">
-		<http:listener path="/${secure::api.base}/*" doc:name="Listener" config-ref="api-httpListenerConfig">
+		<http:listener path="/${secure::api.base}/${secure::api.version}/*" doc:name="Listener" config-ref="api-httpListenerConfig">
 			<http:response statusCode="#[vars.httpStatus default 200]"
 				reasonPhrase="#[vars.reasonPhrase]" >
 				<http:headers><![CDATA[#[output applicaton/java
