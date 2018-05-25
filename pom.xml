@@ -10,7 +10,7 @@
 	<name>mule4-skeleton-process-api</name>
 
     <properties>
-		<muleHttpConnector>1.1.0</muleHttpConnector>
+		<muleHttpConnector>1.2.0</muleHttpConnector>
 
 	<!-- <attachMuleSources>true</attachMuleSources> -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
