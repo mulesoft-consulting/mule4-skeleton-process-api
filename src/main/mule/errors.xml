@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/min-log http://www.mulesoft.org/schema/mule/
 	<configuration defaultErrorHandler-ref="apikit-errors" />
 
 	<error-handler name="apikit-errors">
-		<on-error-propagate type="APIKIT:BAD_REQUEST">
+		<on-error-propagate type="APIKIT:BAD_REQUEST, HTTP:BAD_REQUEST, HTTP:CLIENT_SECURITY, HTTP:FORBIDDEN, HTTP:NOT_ACCEPTABLE, HTTP:PARSING, HTTP:SECURITY, HTTP:UNAUTHORIZED">
 			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 				<ee:message>
@@ -25,7 +25,7 @@ output application/json
 				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
-		<on-error-propagate type="APIKIT:NOT_FOUND">
+		<on-error-propagate type="APIKIT:NOT_FOUND,HTTP:NOT_FOUND">
 			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 				<ee:message>
@@ -40,7 +40,7 @@ output application/json
 				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
-		<on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+		<on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED, HTTP:METHOD_NOT_ALLOWED">
 			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 				<ee:message>
@@ -55,7 +55,7 @@ output application/json
 				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
-		<on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+		<on-error-propagate type="APIKIT:NOT_ACCEPTABLE, HTTP:NOT_ACCEPTABLE">
 			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 				<ee:message>
@@ -70,7 +70,7 @@ output application/json
 				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
-		<on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+		<on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE, HTTP:UNSUPPORTED_MEDIA_TYPE">
 			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 				<ee:message>
@@ -84,6 +84,28 @@ output application/json
 					</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true"
+			logException="true" doc:name="On Error Propagate" doc:id="e5710c09-811b-42bf-8c20-a1ff5892fd67"
+			type="HTTP:TOO_MANY_REQUESTS">
+			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="2d82b893-a1ad-44cd-b2ee-3bb0bb2e7b41">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{status: "429", message: "Too Many Requests"}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[429]]></ee:set-variable>
+					<ee:set-variable variableName="httpReason"><![CDATA["Too Many Requests"]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<min-log:log doc:name="Log" level="WARN"
+				msg="Too Many Requests" transactionProperties="#[vars.transactionProperties]" />
 		</on-error-propagate>
 		<on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
 			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
@@ -101,6 +123,28 @@ output application/json
 					</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true"
+			logException="true" doc:name="On Error Propagate" doc:id="e5710c09-811b-42bf-8c20-a1ff5892fd67"
+			type="HTTP:CONNECTIVITY, HTTP:RETRY_EXHAUSTED, HTTP:SERVICE_UNAVAILABLE">
+			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="2d82b893-a1ad-44cd-b2ee-3bb0bb2e7b41">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{status: "503", message: "Service Unavailable"}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[503]]></ee:set-variable>
+					<ee:set-variable variableName="httpReason"><![CDATA["Service Unavailable"]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<min-log:log doc:name="Log" level="WARN"
+				msg="Service Unavailable" transactionProperties="#[vars.transactionProperties]" />
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" type="HTTP:TIMEOUT">
 			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
